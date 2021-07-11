@@ -9,6 +9,7 @@ import os
 import socket
 import ssl
 import sys
+
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -26,6 +27,7 @@ import click
 
 from uvicorn._logging import TRACE_LOG_LEVEL
 
+
 if sys.version_info < (3, 8):  # pragma: py-gte-38
     from typing_extensions import Literal
 else:  # pragma: py-lt-38
@@ -33,6 +35,7 @@ else:  # pragma: py-lt-38
 
 if TYPE_CHECKING:
     from asgiref.typing import ASGIApplication
+
 
 try:
     import yaml
@@ -48,6 +51,7 @@ from uvicorn.middleware.debug import DebugMiddleware
 from uvicorn.middleware.message_logger import MessageLoggerMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from uvicorn.middleware.wsgi import WSGIMiddleware
+
 
 HTTPProtocolType = Literal["auto", "h11", "httptools"]
 WSProtocolType = Literal["auto", "none", "websockets", "wsproto"]
@@ -289,6 +293,7 @@ class Config:
         self.callback_notify = callback_notify
         self.ssl_keyfile = ssl_keyfile
         self.ssl_certfile = ssl_certfile
+        self.ssl_cert_pem: Optional[str] = None
         self.ssl_keyfile_password = ssl_keyfile_password
         self.ssl_version = ssl_version
         self.ssl_cert_reqs = ssl_cert_reqs
@@ -441,6 +446,8 @@ class Config:
                 ca_certs=self.ssl_ca_certs,
                 ciphers=self.ssl_ciphers,
             )
+            with open(self.ssl_certfile) as file:
+                self.ssl_cert_pem = file.read()
         else:
             self.ssl = None
 

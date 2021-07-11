@@ -3,6 +3,7 @@ import http
 import logging
 import re
 import urllib
+
 from collections import deque
 
 import httptools
@@ -19,8 +20,10 @@ from uvicorn.protocols.utils import (
     get_local_addr,
     get_path_with_query_string,
     get_remote_addr,
+    get_tls_info,
     is_ssl,
 )
+
 
 HEADER_RE = re.compile(b'[\x00-\x1F\x7F()<>@,;:[]={} \t\\"]')
 HEADER_VALUE_RE = re.compile(b"[\x00-\x1F\x7F]")
@@ -72,6 +75,8 @@ class HttpToolsProtocol(asyncio.Protocol):
         self.client = None
         self.scheme = None
         self.pipeline = deque()
+        self.pipeline = []
+        self.tls = None
 
         # Per-request state
         self.scope = None
@@ -88,6 +93,11 @@ class HttpToolsProtocol(asyncio.Protocol):
         self.server = get_local_addr(transport)
         self.client = get_remote_addr(transport)
         self.scheme = "https" if is_ssl(transport) else "http"
+
+        if self.config.is_ssl:
+            self.tls = get_tls_info(transport)
+            if self.tls:
+                self.tls["server_cert"] = self.config.ssl_cert_pem
 
         if self.logger.level <= TRACE_LOG_LEVEL:
             prefix = "%s:%d - " % tuple(self.client) if self.client else ""
@@ -194,6 +204,9 @@ class HttpToolsProtocol(asyncio.Protocol):
             "scheme": self.scheme,
             "root_path": self.root_path,
             "headers": self.headers,
+            "extensions": {
+                "tls": self.tls,
+            },
         }
 
     # Parser callbacks

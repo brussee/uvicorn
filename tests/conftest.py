@@ -1,5 +1,6 @@
 import os
 import ssl
+
 from copy import deepcopy
 from hashlib import md5
 from pathlib import Path
@@ -8,6 +9,7 @@ from uuid import uuid4
 
 import pytest
 import trustme
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 
@@ -26,6 +28,20 @@ def tls_certificate(tls_certificate_authority: trustme.CA) -> trustme.LeafCert:
         "127.0.0.1",
         "::1",
     )
+
+
+@pytest.fixture
+def tls_client_certificate(tls_certificate_authority: trustme.CA) -> trustme.LeafCert:
+    return tls_certificate_authority.issue_cert(
+        "client@example.com", common_name="uvicorn client"
+    )
+
+
+@pytest.fixture
+def tls_client_certificate_pem_path(tls_client_certificate: trustme.LeafCert):
+    private_key_and_cert_chain = tls_client_certificate.private_key_and_cert_chain_pem
+    with private_key_and_cert_chain.tempfile() as client_cert_pem:
+        yield client_cert_pem
 
 
 @pytest.fixture
