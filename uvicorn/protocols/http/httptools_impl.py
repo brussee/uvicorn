@@ -204,14 +204,14 @@ class HttpToolsProtocol(asyncio.Protocol):
             "scheme": self.scheme,
             "root_path": self.root_path,
             "headers": self.headers,
-            "extensions": {
-                "tls": self.tls,
-            },
+            "extensions": {},
         }
 
     # Parser callbacks
     def on_url(self, url):
         self.url += url
+        if self.config.is_ssl:
+            self.scope["extensions"]["tls"] = self.tls
 
     def on_header(self, name: bytes, value: bytes):
         name = name.lower()
