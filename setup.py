@@ -51,7 +51,7 @@ minimal_requirements = [
 
 
 extra_requirements = [
-    "asgiref>=3.4.0",
+    # "asgiref>=3.4.0",
     "websockets>=10.0",
     "httptools>=0.4.0",
     "uvloop>=0.14.0,!=0.15.0,!=0.15.1; " + env_marker_cpython,
