@@ -5,11 +5,13 @@ import os
 import platform
 import ssl
 import sys
-import typing
+
+from typing import TYPE_CHECKING, Any, List, Union
 
 import click
 
 import uvicorn
+
 from uvicorn.config import (
     HTTP_PROTOCOLS,
     INTERFACES,
@@ -24,7 +26,8 @@ from uvicorn.config import (
 from uvicorn.server import Server, ServerState  # noqa: F401  # Used to be defined here.
 from uvicorn.supervisors import ChangeReload, Multiprocess
 
-if typing.TYPE_CHECKING:
+
+if TYPE_CHECKING:
     from asgiref.typing import ASGIApplication
 
 LEVEL_CHOICES = click.Choice(list(LOG_LEVELS.keys()))
@@ -362,9 +365,9 @@ def main(
     interface: str,
     debug: bool,
     reload: bool,
-    reload_dirs: typing.List[str],
-    reload_includes: typing.List[str],
-    reload_excludes: typing.List[str],
+    reload_dirs: List[str],
+    reload_includes: List[str],
+    reload_excludes: List[str],
     reload_delay: float,
     workers: int,
     env_file: str,
@@ -387,7 +390,7 @@ def main(
     ssl_cert_reqs: int,
     ssl_ca_certs: str,
     ssl_ciphers: str,
-    headers: typing.List[str],
+    headers: List[str],
     use_colors: bool,
     app_dir: str,
     factory: bool,
@@ -441,7 +444,7 @@ def main(
     run(app, **kwargs)
 
 
-def run(app: typing.Union[ASGIApplication, str], **kwargs: typing.Any) -> None:
+def run(app: Union[ASGIApplication, str], **kwargs: Any) -> None:
     app_dir = kwargs.pop("app_dir", None)
     if app_dir is not None:
         sys.path.insert(0, app_dir)

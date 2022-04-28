@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import asyncio
-import typing
 
-if typing.TYPE_CHECKING:
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
     from asgiref.typing import (
         ASGIReceiveCallable,
         ASGISendCallable,

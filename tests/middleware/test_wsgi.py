@@ -1,16 +1,19 @@
 import io
 import sys
-from typing import AsyncGenerator, List
+import typing
 
 import httpx
 import pytest
-from asgiref.typing import HTTPRequestEvent, HTTPScope
+
+
+if typing.TYPE_CHECKING:
+    from asgiref.typing import HTTPRequestEvent, HTTPScope
 
 from uvicorn._types import Environ, StartResponse
 from uvicorn.middleware.wsgi import WSGIMiddleware, build_environ
 
 
-def hello_world(environ: Environ, start_response: StartResponse) -> List[bytes]:
+def hello_world(environ: Environ, start_response: StartResponse) -> typing.List[bytes]:
     status = "200 OK"
     output = b"Hello World!\n"
     headers = [
@@ -21,7 +24,7 @@ def hello_world(environ: Environ, start_response: StartResponse) -> List[bytes]:
     return [output]
 
 
-def echo_body(environ: Environ, start_response: StartResponse) -> List[bytes]:
+def echo_body(environ: Environ, start_response: StartResponse) -> typing.List[bytes]:
     status = "200 OK"
     output = environ["wsgi.input"].read()
     headers = [
@@ -36,7 +39,7 @@ def raise_exception(environ: Environ, start_response: StartResponse) -> RuntimeE
     raise RuntimeError("Something went wrong")
 
 
-def return_exc_info(environ: Environ, start_response: StartResponse) -> List[bytes]:
+def return_exc_info(environ: Environ, start_response: StartResponse) -> typing.List[bytes]:
     try:
         raise RuntimeError("Something went wrong")
     except RuntimeError:
@@ -70,7 +73,7 @@ async def test_wsgi_post() -> None:
 
 @pytest.mark.asyncio
 async def test_wsgi_put_more_body() -> None:
-    async def generate_body() -> AsyncGenerator[bytes, None]:
+    async def generate_body() -> typing.AsyncGenerator[bytes, None]:
         for _ in range(1024):
             yield b"123456789abcdef\n" * 64
 

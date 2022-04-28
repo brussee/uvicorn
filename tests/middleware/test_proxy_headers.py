@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Union
+import typing
 
 import httpx
 import pytest
@@ -8,7 +8,8 @@ import pytest
 from tests.response import Response
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
-if TYPE_CHECKING:
+
+if typing.TYPE_CHECKING:
     from asgiref.typing import ASGIReceiveCallable, ASGISendCallable, Scope
 
 
@@ -41,7 +42,7 @@ async def app(
     ],
 )
 async def test_proxy_headers_trusted_hosts(
-    trusted_hosts: Union[List[str], str], response_text: str
+    trusted_hosts: typing.Union[typing.List[str], str], response_text: str
 ) -> None:
     app_with_middleware = ProxyHeadersMiddleware(app, trusted_hosts=trusted_hosts)
     async with httpx.AsyncClient(
@@ -75,7 +76,7 @@ async def test_proxy_headers_trusted_hosts(
     ],
 )
 async def test_proxy_headers_multiple_proxies(
-    trusted_hosts: Union[List[str], str], response_text: str
+    trusted_hosts: typing.Union[typing.List[str], str], response_text: str
 ) -> None:
     app_with_middleware = ProxyHeadersMiddleware(app, trusted_hosts=trusted_hosts)
     async with httpx.AsyncClient(

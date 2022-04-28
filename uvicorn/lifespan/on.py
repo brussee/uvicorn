@@ -1,19 +1,23 @@
 import asyncio
 import logging
-from asyncio import Queue
-from typing import Union
 
-from asgiref.typing import (
-    LifespanScope,
-    LifespanShutdownCompleteEvent,
-    LifespanShutdownEvent,
-    LifespanShutdownFailedEvent,
-    LifespanStartupCompleteEvent,
-    LifespanStartupEvent,
-    LifespanStartupFailedEvent,
-)
+from asyncio import Queue
+from typing import TYPE_CHECKING, Union
+
+
+if TYPE_CHECKING:
+    from asgiref.typing import (
+        LifespanScope,
+        LifespanShutdownCompleteEvent,
+        LifespanShutdownEvent,
+        LifespanShutdownFailedEvent,
+        LifespanStartupCompleteEvent,
+        LifespanStartupEvent,
+        LifespanStartupFailedEvent,
+    )
 
 from uvicorn import Config
+
 
 LifespanReceiveMessage = Union[LifespanStartupEvent, LifespanShutdownEvent]
 LifespanSendMessage = Union[
