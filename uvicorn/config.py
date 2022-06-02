@@ -11,17 +11,7 @@ import ssl
 import sys
 
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Awaitable,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union
 
 import click
 
@@ -33,8 +23,8 @@ if sys.version_info < (3, 8):  # pragma: py-gte-38
 else:  # pragma: py-lt-38
     from typing import Literal
 
-if TYPE_CHECKING:
-    from asgiref.typing import ASGIApplication
+# if TYPE_CHECKING:
+from asgiref.typing import ASGIApplication
 
 
 try:

@@ -2,19 +2,18 @@ import asyncio
 import logging
 
 from asyncio import Queue
-from typing import TYPE_CHECKING, Union
+from typing import Union
 
-
-if TYPE_CHECKING:
-    from asgiref.typing import (
-        LifespanScope,
-        LifespanShutdownCompleteEvent,
-        LifespanShutdownEvent,
-        LifespanShutdownFailedEvent,
-        LifespanStartupCompleteEvent,
-        LifespanStartupEvent,
-        LifespanStartupFailedEvent,
-    )
+# if TYPE_CHECKING:
+from asgiref.typing import (
+    LifespanScope,
+    LifespanShutdownCompleteEvent,
+    LifespanShutdownEvent,
+    LifespanShutdownFailedEvent,
+    LifespanStartupCompleteEvent,
+    LifespanStartupEvent,
+    LifespanStartupFailedEvent,
+)
 
 from uvicorn import Config
 

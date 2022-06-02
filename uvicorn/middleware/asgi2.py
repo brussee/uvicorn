@@ -1,15 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+from asgiref.typing import ASGI2Application, ASGIReceiveCallable, ASGISendCallable, Scope
 
 
-if TYPE_CHECKING:
-    from asgiref.typing import (
-        ASGI2Application,
-        ASGIReceiveCallable,
-        ASGISendCallable,
-        Scope,
-    )
+# from typing import TYPE_CHECKING
 
 
 class ASGI2Middleware:

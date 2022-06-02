@@ -8,21 +8,23 @@ import socket
 import sys
 import threading
 import time
+
 from email.utils import formatdate
 from types import FrameType
-from typing import TYPE_CHECKING, List, Optional, Set, Tuple, Union
+from typing import List, Optional, Set, Tuple, Union
 
 import click
 
 from uvicorn.config import Config
 
-if TYPE_CHECKING:
-    from uvicorn.protocols.http.h11_impl import H11Protocol
-    from uvicorn.protocols.http.httptools_impl import HttpToolsProtocol
-    from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
-    from uvicorn.protocols.websockets.wsproto_impl import WSProtocol
+# if TYPE_CHECKING:
+from uvicorn.protocols.http.h11_impl import H11Protocol
+from uvicorn.protocols.http.httptools_impl import HttpToolsProtocol
+from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+from uvicorn.protocols.websockets.wsproto_impl import WSProtocol
 
-    Protocols = Union[H11Protocol, HttpToolsProtocol, WSProtocol, WebSocketProtocol]
+
+Protocols = Union[H11Protocol, HttpToolsProtocol, WSProtocol, WebSocketProtocol]
 
 
 HANDLED_SIGNALS = (

@@ -1,19 +1,22 @@
 import logging
+
 from pathlib import Path
 from socket import socket
-from typing import TYPE_CHECKING, Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
 from watchgod import DefaultWatcher
 
 from uvicorn.config import Config
 from uvicorn.supervisors.basereload import BaseReload
 
+
 logger = logging.getLogger("uvicorn.error")
 
-if TYPE_CHECKING:
-    import os
+# if TYPE_CHECKING:
+import os
 
-    DirEntry = os.DirEntry[str]
+
+DirEntry = os.DirEntry[str]
 
 
 class CustomWatcher(DefaultWatcher):

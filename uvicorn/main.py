@@ -6,9 +6,12 @@ import platform
 import ssl
 import sys
 
-from typing import TYPE_CHECKING, Any, List, Union
+from typing import Any, List, Union
 
 import click
+
+# if TYPE_CHECKING:
+from asgiref.typing import ASGIApplication
 
 import uvicorn
 
@@ -26,9 +29,6 @@ from uvicorn.config import (
 from uvicorn.server import Server, ServerState  # noqa: F401  # Used to be defined here.
 from uvicorn.supervisors import ChangeReload, Multiprocess
 
-
-if TYPE_CHECKING:
-    from asgiref.typing import ASGIApplication
 
 LEVEL_CHOICES = click.Choice(list(LOG_LEVELS.keys()))
 HTTP_CHOICES = click.Choice(list(HTTP_PROTOCOLS.keys()))

@@ -10,17 +10,17 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#Proxies
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union, cast
+from typing import List, Optional, Tuple, Union, cast
 
-if TYPE_CHECKING:
-    from asgiref.typing import (
-        ASGI3Application,
-        ASGIReceiveCallable,
-        ASGISendCallable,
-        HTTPScope,
-        Scope,
-        WebSocketScope,
-    )
+# if TYPE_CHECKING:
+from asgiref.typing import (
+    ASGI3Application,
+    ASGIReceiveCallable,
+    ASGISendCallable,
+    HTTPScope,
+    Scope,
+    WebSocketScope,
+)
 
 
 class ProxyHeadersMiddleware:
@@ -34,9 +34,7 @@ class ProxyHeadersMiddleware:
             self.trusted_hosts = set(trusted_hosts)
         self.always_trust = "*" in self.trusted_hosts
 
-    def get_trusted_client_host(
-        self, x_forwarded_for_hosts: List[str]
-    ) -> Optional[str]:
+    def get_trusted_client_host(self, x_forwarded_for_hosts: List[str]) -> Optional[str]:
         if self.always_trust:
             return x_forwarded_for_hosts[0]
 

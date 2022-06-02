@@ -2,17 +2,18 @@ from __future__ import annotations
 
 import asyncio
 
-from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+from asgiref.typing import (
+    ASGIReceiveCallable,
+    ASGISendCallable,
+    HTTPResponseBodyEvent,
+    HTTPResponseStartEvent,
+    Scope,
+)
 
 
-if TYPE_CHECKING:
-    from asgiref.typing import (
-        ASGIReceiveCallable,
-        ASGISendCallable,
-        HTTPResponseBodyEvent,
-        HTTPResponseStartEvent,
-        Scope,
-    )
+# from typing import TYPE_CHECKING
+
 
 CLOSE_HEADER = (b"connection", b"close")
 
