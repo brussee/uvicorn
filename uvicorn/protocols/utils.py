@@ -81,15 +81,17 @@ def get_tls_info(transport: asyncio.Transport) -> Optional[Dict]:
 
     ###
     # server_cert: Unable to set from transport information
+    # client_cert: @see https://docs.python.org/3/library/ssl.html#ssl.SSLSocket.getpeercert
     # client_cert_chain: Just the peercert, currently no access to the full cert chain
-    # client_cert_name:
+    # client_cert_name: @see `RDNS_MAPPING`
     # client_cert_error: No access to this
-    # tls_version:
+    # tls_version: @see `TLS_VERSION_MAP`
     # cipher_suite: Too hard to convert without direct access to openssl
     ###
 
     ssl_info: Dict[str, Any] = {
         "server_cert": None,
+        "client_cert": None,
         "client_cert_chain": [],
         "client_cert_name": None,
         "client_cert_error": None,
@@ -99,6 +101,7 @@ def get_tls_info(transport: asyncio.Transport) -> Optional[Dict]:
 
     ssl_object = transport.get_extra_info("ssl_object", default=None)
     peercert = ssl_object.getpeercert()
+    ssl_info["client_cert"] = peercert
 
     if peercert:
         rdn_strings = []
