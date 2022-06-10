@@ -109,7 +109,7 @@ def get_tls_info(transport: asyncio.Transport) -> Optional[Dict]:
             rdn_strings.append(
                 "+".join(
                     [
-                        "%s = %s" % (RDNS_MAPPING[entry[0]], entry[1])
+                        "%s=%s" % (RDNS_MAPPING[entry[0]], entry[1])
                         for entry in reversed(rdn)
                         if entry[0] in RDNS_MAPPING
                     ]
