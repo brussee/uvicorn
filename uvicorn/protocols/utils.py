@@ -84,41 +84,84 @@ def get_tls_info(
     ###
     # server_cert: Unable to set from transport information, need to read from config
     # client_cert_chain: Just the peercert, currently no access to the full cert chain
-    # client_cert_name:
+    # client_cert_name: @see `client_cert_subject_name`
     # client_cert_error: No access to this
-    # tls_version:
+    # tls_version: @see `TLS_VERSION_MAP`
     # cipher_suite: Too hard to convert without direct access to openssl
     ###
 
+    ###
+    # server_cert_binary: Unable to set from transport information
+    # server_cert_chain: Unable to set from transport information
+    # server_cert_name: @see `server_cert_subject_name`
+    # server_cert_issuer_name: Unable to set from transport information
+    # server_cert_subject_name: Unable to set from transport information
+    #
+    # client_cert: @see https://docs.python.org/3/library/ssl.html#ssl.SSLSocket.getpeercert
+    # client_cert_binary: @see https://docs.python.org/3/library/ssl.html#ssl.SSLSocket.getpeercert
+    # client_cert_issuer_name: @see `RDNS_MAPPING`
+    # client_cert_subject_name: @see `RDNS_MAPPING`
+    ###
+
     ssl_info: Dict[str, Any] = {
+        # ASGI TLS Extension Version: 0.2 (2020-10-02)
         "server_cert": server_pem,
         "client_cert_chain": [],
         "client_cert_name": None,
         "client_cert_error": None,
         "tls_version": None,
         "cipher_suite": None,
+        # Custom
+        "server_cert_binary": None,
+        "server_cert_chain": [],
+        "server_cert_name": None,
+        "server_cert_issuer_name": None,
+        "server_cert_subject_name": None,
+        "client_cert": None,
+        "client_cert_binary": None,
+        "client_cert_subject_name": None,
+        "client_cert_issuer_name": None,
     }
 
     ssl_object = transport.get_extra_info("ssl_object", default=None)
-    peercert = ssl_object.getpeercert()
+    peercert = ssl_object.getpeercert(binary_form=False)
+    ssl_info["client_cert"] = peercert
 
     if peercert:
-        rdn_strings = []
-        for rdn in peercert["subject"]:
-            rdn_strings.append(
+        issuer_rdn_strings = []
+        for rdn in peercert["issuer"]:
+            issuer_rdn_strings.append(
                 "+".join(
                     [
-                        "%s = %s" % (RDNS_MAPPING[entry[0]], entry[1])
+                        "%s=%s" % (RDNS_MAPPING[entry[0]], entry[1])
+                        for entry in reversed(rdn)
+                        if entry[0] in RDNS_MAPPING
+                    ]
+                )
+            )
+        subject_rdn_strings = []
+        for rdn in peercert["subject"]:
+            subject_rdn_strings.append(
+                "+".join(
+                    [
+                        "%s=%s" % (RDNS_MAPPING[entry[0]], entry[1])
                         for entry in reversed(rdn)
                         if entry[0] in RDNS_MAPPING
                     ]
                 )
             )
 
-        ssl_info["client_cert_chain"] = [
-            ssl.DER_cert_to_PEM_cert(ssl_object.getpeercert(binary_form=True))
-        ]
-        ssl_info["client_cert_name"] = ", ".join(rdn_strings) if rdn_strings else ""
+        ssl_info["client_cert_binary"] = ssl.DER_cert_to_PEM_cert(
+            ssl_object.getpeercert(binary_form=True)
+        )
+        ssl_info["client_cert_chain"] = [ssl_info["client_cert_binary"]]
+        ssl_info["client_cert_issuer_name"] = (
+            ", ".join(issuer_rdn_strings) if issuer_rdn_strings else ""
+        )
+        ssl_info["client_cert_subject_name"] = (
+            ", ".join(subject_rdn_strings) if subject_rdn_strings else ""
+        )
+        ssl_info["client_cert_name"] = ssl_info["client_cert_subject_name"]
 
     ssl_info["tls_version"] = (
         TLS_VERSION_MAP[ssl_object.version()]
